@@ -25,7 +25,7 @@ export default {
     },
     methods: {
         goToHabitPage() {
-            this.$root.$options.router.push({ name: "habito" });
+            this.$root.$options.router.push({ name: "habit" });
         },
     },
 };
