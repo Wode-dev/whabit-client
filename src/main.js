@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import Vuex from 'vuex'
 
 import {
   BootstrapVue,
@@ -11,6 +12,8 @@ import {
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
+
+Vue.use(Vuex)
 
 Vue.config.productionTip = false
 
