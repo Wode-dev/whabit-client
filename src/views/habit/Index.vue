@@ -4,6 +4,8 @@
             <b-button :to="{name: 'Home'}">Voltar</b-button>
 
             <p class="h1">{{habit.name}}</p>
+            <p>Dias: 20</p>
+            <p>Maior sequencia: 7</p>
             <b-row class="mt-2">
                 <b-col class="pr-1" cols="6">
                     <b-form-select
