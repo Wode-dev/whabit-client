@@ -7,4 +7,11 @@ export default class Habit {
             'method': 'get'
         });
     }
+
+    static getAllFromAPI() {
+        return axios.request({
+            'url': '/habit',
+            'method': 'get'
+        });
+    }
 }

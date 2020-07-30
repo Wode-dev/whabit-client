@@ -1,28 +1,22 @@
 <template>
-    <b-list-group>
-        <b-list-group-item v-for="habit in habits" v-bind:key="habit.name">
-            <span @click="goToHabitPage(habit)">{{habit.name}}</span>
-            <b-form-checkbox class="float-right"></b-form-checkbox>
-        </b-list-group-item>
-    </b-list-group>
+    <div>
+        <b-list-group v-if="habits.length > 0">
+            <b-list-group-item v-for="habit in habits" v-bind:key="habit.id">
+                <span @click="goToHabitPage(habit)">{{habit.name}}</span>
+            </b-list-group-item>
+        </b-list-group>
+        <div v-else>
+            <p>Você ainda não tem nenhum hábito :( Crie algum hábito agora!</p>
+        </div>
+    </div>
 </template>
 
 <script>
+import Habit from "../core/models/Habit";
 export default {
     data() {
         return {
-            habits: [
-                {
-                    id: 1,
-                    name: "Habito 1",
-                    completed: [Date.now()],
-                },
-                {
-                    id: 2,
-                    name: "Habito 2",
-                    completed: ["Oi"],
-                },
-            ],
+            habits: [],
         };
     },
     methods: {
@@ -34,6 +28,13 @@ export default {
                 },
             });
         },
+    },
+    beforeMount() {
+        let component = this;
+        Habit.getAllFromAPI().then((response) => {
+            console.log({ response });
+            component.habits = response.data.data;
+        });
     },
 };
 </script>
