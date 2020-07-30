@@ -28,7 +28,7 @@ export default {
     methods: {
         goToHabitPage(habit) {
             this.$root.$options.router.push({
-                name: "habit",
+                name: "Habit",
                 params: {
                     habit: habit,
                 },

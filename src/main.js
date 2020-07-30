@@ -20,6 +20,11 @@ import {
 
 Vue.config.productionTip = false
 
+let baseurl = window.location.host;
+// let baseurl = 'whabit.wode.lh';
+let https = true;
+axios.defaults.baseURL = `http${https ? 's' : ''}://api.${baseurl}`;
+
 Vue.use(VueAxios, axios)
 
 new Vue({

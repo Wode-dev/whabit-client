@@ -10,8 +10,8 @@ const routes = [{
   },
   {
     path: '/habito',
-    name: 'habit',
-    component: () => import('../views/habit/Index.vue')
+    name: 'Habit',
+    component: () => import('../views/habit/HabitIndex.vue')
   }
 ]
 

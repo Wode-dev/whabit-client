@@ -2,10 +2,9 @@
     <main-layout>
         <b-container class="pt-2">
             <b-button :to="{name: 'Home'}">Voltar</b-button>
-
-            <p class="h1">{{habit.name}}</p>
-            <p>Dias: 20</p>
-            <p>Maior sequencia: 7</p>
+            <p class="h1">{{habit ? habit.name : "Undefined"}}</p>
+            <p>Dias: {{habit ? habit.data.accomplishment_amount : 0}}</p>
+            <!-- <p>Maior sequencia: 7</p> -->
             <b-row class="mt-2">
                 <b-col class="pr-1" cols="6">
                     <b-form-select
@@ -30,6 +29,8 @@
 
 <script>
 import MainLayout from "../../layouts/MainLayout";
+import Habit from "../../core/models/Habit";
+import Accomplishment from "../../core/models/Accomplishment";
 // import Habit from "../../core/models/Habit";
 export default {
     data() {
@@ -38,7 +39,7 @@ export default {
                 year: new Date().getFullYear(),
                 month: new Date().getMonth(),
             },
-            habit: { name: "Undefined" },
+            habit: {},
             months: [
                 { value: 0, text: "Janeiro" },
                 { value: 1, text: "Fevereiro" },
@@ -53,43 +54,28 @@ export default {
                 { value: 10, text: "Novembro" },
                 { value: 11, text: "Dezembro" },
             ],
+            days: [],
         };
     },
     components: { MainLayout },
-    created() {
+    beforeCreate() {
         if (this.$route.params.habit) {
-            this.habit = this.$route.params.habit;
+            Habit.getFromAPI(this.$route.params.habit.id).then((response) => {
+                console.log({ response });
+                this.habit = response.data;
+                this.updateDays();
+            });
+        } else {
+            this.$router.push({ name: "Home" });
         }
     },
     watch: {
-        selection: function () {
-            console.log("updated");
-            this.updateDays();
-        },
-    },
-    computed: {
-        days: function () {
-            let days = [];
-            let total = [
-                ...Array(
-                    new Date(
-                        this.selection.year,
-                        this.selection.month + 1,
-                        0
-                    ).getDate()
-                ).keys(),
-            ].length;
-            for (let index = 0; index < total; index++) {
-                days.push({ value: index, text: index + 1, checked: false });
-            }
-
-            console.log({
-                days,
-                total,
-                year: this.selection.year,
-                month: this.selection.month + 1,
-            });
-            return days;
+        selection: {
+            handler: function () {
+                console.log("updated");
+                this.updateDays();
+            },
+            deep: true,
         },
     },
     methods: {
@@ -133,26 +119,52 @@ export default {
             }
         },
         updateDays() {
-            let days = [];
-            for (
-                let index = 0;
-                index <
-                Array.from(
+            let component = this;
+            Accomplishment.getAllFromAPI(
+                this.habit.id,
+                this.selection.year,
+                this.selection.month + 1
+            ).then((response) => {
+                // Transform array with objects into
+                // Array with only dates
+                let dates = response.data.map((value) => {
+                    return value.date;
+                });
+
+                let days = [];
+                let daysFromMonth = Array.from(
                     Array(
                         new Date(
-                            this.selection.year,
-                            this.selection.month + 1,
+                            component.selection.year,
+                            component.selection.month + 1,
                             0
-                        )
+                        ).getDate()
                     ).keys()
-                );
-                index++
-            ) {
-                days.push({ value: index, text: index + 1, checked: true });
-            }
+                ).length;
 
-            console.log(days);
-            return days;
+                // For each day of the month, check if was it is checked
+                for (let index = 0; index < daysFromMonth; index++) {
+                    //Get date ISO string, and pick only date
+                    let dateString = new Date(
+                        component.selection.year,
+                        component.selection.month,
+                        index + 1
+                    )
+                        .toISOString()
+                        .split("T")[0];
+                    let day = {
+                        value: index,
+                        text: index + 1,
+                        checked: dates.includes(dateString),
+                    };
+
+                    // Push days to form checkbox
+                    days.push(day);
+                }
+
+                //Assign days coming from API into component variable
+                component.days = days;
+            });
         },
     },
 };
