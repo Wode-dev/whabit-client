@@ -43,6 +43,7 @@ export default {
             Habit.create(this.axios, habit)
                 .then(function () {
                     comp.$bvModal.hide("new-habit");
+                    comp.$root.$emit("new-habit-created");
                 })
                 .catch(() => {
                     //Update list

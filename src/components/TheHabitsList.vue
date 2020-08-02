@@ -28,12 +28,25 @@ export default {
                 },
             });
         },
+        getAllHabitsFromAPI() {
+            // Get all habits from API
+            let component = this;
+            Habit.getAllFromAPI()
+                .then((response) => {
+                    component.habits = response.data.data;
+                })
+                .catch((error) => {
+                    console.log({ error });
+                });
+        },
     },
     beforeMount() {
-        let component = this;
-        Habit.getAllFromAPI().then((response) => {
-            console.log({ response });
-            component.habits = response.data.data;
+        this.getAllHabitsFromAPI();
+
+        // Add event listener para
+        let comp = this;
+        this.$root.$on("new-habit-created", () => {
+            comp.getAllHabitsFromAPI();
         });
     },
 };
