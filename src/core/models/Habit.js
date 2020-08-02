@@ -9,9 +9,14 @@ export default class Habit {
     }
 
     static getAllFromAPI() {
-        return axios.request({
-            'url': '/habit',
-            'method': 'get'
-        });
+        return axios.get('/habit');
+    }
+
+    static create(axios, habit) {
+        var stringify = require('qs-stringify');
+        let habitData = stringify(habit);
+        let
+            r = axios.post('habit', habitData);
+        return r;
     }
 }
