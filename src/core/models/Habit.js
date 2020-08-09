@@ -16,7 +16,18 @@ export default class Habit {
         var stringify = require('qs-stringify');
         let habitData = stringify(habit);
         let
-            r = axios.post('habit', habitData);
+            r = axios.post('/habit', habitData);
         return r;
+    }
+
+    static delete(habit) {
+        console.log({
+            habit
+        })
+        return axios.delete(`/habit/${habit}`).catch((error) => {
+            console.log({
+                error
+            })
+        });
     }
 }
