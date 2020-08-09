@@ -20,10 +20,15 @@
             <b-row class="mt-2">
                 <b-col v-for="day in days" v-bind:key="day.value" cols="3">
                     <span>{{day.text}}</span>
-                    <b-form-checkbox class="float-right" v-model="day.checked"></b-form-checkbox>
+                    <b-form-checkbox
+                        @change="toggleAccomplishment(day)"
+                        class="float-right"
+                        v-model="day.checked"
+                    ></b-form-checkbox>
                 </b-col>
             </b-row>
         </b-container>
+        <b-button @click.prevent="deleteHabit">Excluir</b-button>
     </main-layout>
 </template>
 
@@ -79,6 +84,31 @@ export default {
         },
     },
     methods: {
+        deleteHabit() {
+            Habit.delete(this.habit.id)
+                .then(() => {
+                    console.log("deleted");
+                })
+                .catch((error) => {
+                    console.log({ error });
+                });
+        },
+        toggleAccomplishment(day) {
+            //Send accomplishment to server
+            Accomplishment.setAccomplishmentStatus(
+                this.habit.id,
+                this.selection.year,
+                this.selection.month + 1,
+                day.text,
+                !day.checked
+            )
+                .then((response) => {
+                    console.log({ response });
+                })
+                .catch((error) => {
+                    console.log({ error });
+                });
+        },
         getYears() {
             let years = [];
             for (let index = 0; index < 5; index++) {
