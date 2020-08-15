@@ -21,6 +21,9 @@
                 ></b-form-input>
             </b-form-group>
         </b-form>
+        <template v-slot:modal-footer="{ok}">
+            <b-button :disabled="loading.formSubmit" variant="success" @click="ok">Ok</b-button>
+        </template>
     </b-modal>
 </template>
 
@@ -34,16 +37,23 @@ export default {
                     name: "",
                 },
             },
+            loading: {
+                formSubmit: false,
+            },
         };
     },
     methods: {
         onSubmit() {
+            this.loading.formSubmit = true;
             let comp = this;
             let habit = this.form.habit;
             Habit.create(this.axios, habit)
                 .then(function () {
                     comp.$bvModal.hide("new-habit");
                     comp.$root.$emit("new-habit-created");
+
+                    comp.loading.formSubmit = false;
+                    comp.form.habit.name = "";
                 })
                 .catch(() => {
                     //Update list
