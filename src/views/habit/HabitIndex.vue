@@ -17,7 +17,7 @@
                     <b-form-select v-model="selection.month" :options="getMonths()"></b-form-select>
                 </b-col>
             </b-row>
-            <b-row class="mt-2">
+            <b-row v-if="days.length > 0" class="mt-2">
                 <b-col v-for="day in days" v-bind:key="day.value" cols="3">
                     <span>{{day.text}}</span>
                     <b-form-checkbox
@@ -27,8 +27,20 @@
                     ></b-form-checkbox>
                 </b-col>
             </b-row>
+            <b-row v-else>
+                <b-col cols="12">
+                    <div class="d-flex flex-column align-items-center mt-5">
+                        <self-building-square-spinner
+                            :animation-duration="6000"
+                            :size="40"
+                            color="#000000"
+                        />
+                        <span>Carregando...</span>
+                    </div>
+                </b-col>
+            </b-row>
+            <b-button variant="danger" class="mt-3" @click.prevent="deleteHabit">Excluir</b-button>
         </b-container>
-        <b-button @click.prevent="deleteHabit">Excluir</b-button>
     </main-layout>
 </template>
 
@@ -36,6 +48,7 @@
 import MainLayout from "../../layouts/MainLayout";
 import Habit from "../../core/models/Habit";
 import Accomplishment from "../../core/models/Accomplishment";
+import { SelfBuildingSquareSpinner } from "epic-spinners";
 // import Habit from "../../core/models/Habit";
 export default {
     data() {
@@ -62,7 +75,7 @@ export default {
             days: [],
         };
     },
-    components: { MainLayout },
+    components: { MainLayout, SelfBuildingSquareSpinner },
     beforeCreate() {
         if (this.$route.params.habit) {
             Habit.getFromAPI(this.$route.params.habit.id).then((response) => {
@@ -77,7 +90,8 @@ export default {
     watch: {
         selection: {
             handler: function () {
-                console.log("updated");
+                // console.log("updated");
+                this.days = [];
                 this.updateDays();
             },
             deep: true,
