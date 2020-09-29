@@ -20,10 +20,12 @@ import {
 
 Vue.config.productionTip = false
 
-let baseurl = window.location.host;
+// let baseurl = window.location.host;
 // let baseurl = 'whabit.wode.lh';
-let https = true;
-axios.defaults.baseURL = `http${https ? 's' : ''}://api.${baseurl}`;
+// let https = false;
+// axios.defaults.baseURL = `http${https ? 's' : ''}://api.${baseurl}`;
+axios.defaults.baseURL = `http://api.whabit.wode.lh`;
+// axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 Vue.use(VueAxios, axios)
 
